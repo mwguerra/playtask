@@ -1,0 +1,61 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/Admin/**/*';
+@source '../../../../resources/views/filament/admin/**/*';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Sidebar — compact & sticky on MyLists page */
+.playtask-lists-sidebar {
+    @apply lg:sticky lg:top-4 self-start max-h-[calc(100vh-6rem)] overflow-y-auto pr-1;
+}
+
+/* List card in sidebar */
+.playtask-list-item {
+    @apply w-full text-left rounded-xl px-3 py-2.5 transition-all border;
+}
+.playtask-list-item--active {
+    @apply bg-primary-50 border-primary-300 shadow-sm dark:bg-primary-500/10 dark:border-primary-500/40;
+}
+.playtask-list-item--idle {
+    @apply border-transparent hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-200 dark:hover:border-white/10;
+}
+
+/* Todo row */
+.playtask-todo-row {
+    @apply flex items-start gap-3 px-4 py-3 transition-colors;
+}
+.playtask-todo-row:hover {
+    @apply bg-gray-50 dark:bg-white/[0.025];
+}
+.playtask-todo-actions {
+    @apply flex items-center gap-1 shrink-0 transition-opacity;
+    opacity: 0;
+}
+.playtask-todo-row:hover .playtask-todo-actions,
+.playtask-todo-row:focus-within .playtask-todo-actions {
+    opacity: 1;
+}
+
+/* Pill */
+.playtask-pill {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+}
+.playtask-pill--neutral { @apply bg-gray-100 text-gray-700 dark:bg-white/5 dark:text-gray-300; }
+.playtask-pill--tag { @apply bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300; }
+.playtask-pill--success { @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300; }
+.playtask-pill--warning { @apply bg-amber-50 text-amber-800 dark:bg-amber-500/10 dark:text-amber-300; }
+
+/* Toggle checkbox */
+.playtask-check {
+    @apply mt-0.5 h-5 w-5 rounded-md border-2 flex items-center justify-center shrink-0 transition cursor-pointer;
+}
+.playtask-check--done {
+    @apply bg-emerald-500 border-emerald-500 text-white;
+}
+.playtask-check--idle {
+    @apply border-gray-300 dark:border-white/20 hover:border-primary-500;
+}

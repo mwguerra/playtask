@@ -121,7 +121,14 @@ Painel Filament **autenticado** via Filament Auth (sem Fortify). Cada `User` só
 - Página de login padrão do Filament 5 (`Filament\Auth\Pages\Login`), customizada apenas no branding (logo, cor primária).
 - Sem registro público, sem recuperação de senha self-service no MVP (Operador SaaS gera nova senha pelo Superadmin Panel se necessário).
 
-#### 5.2.2. Custom Page — "My Lists" (página principal)
+#### 5.2.2. Dashboard
+
+Page padrão do painel (`/admin`) — exibe um `StatsOverviewWidget` (`AdminStats`) com:
+- **Minhas listas** — total + breakdown (públicas / com senha).
+- **Itens pendentes** — vs. concluídos.
+- **Progresso geral** — % concluído + chart sparkline dos 7 últimos dias.
+
+#### 5.2.3. Custom Page — "My Lists"
 
 Página customizada Filament (`App\Filament\Admin\Pages\MyLists`), **sem ser um Resource tradicional**:
 
@@ -138,21 +145,22 @@ Página customizada Filament (`App\Filament\Admin\Pages\MyLists`), **sem ser um 
   - Section "Proteção": `requires_password` (Toggle), `password` (TextInput type=password, visível apenas se `requires_password = true`, gravado como hash bcrypt; campo vazio na edição = não altera).
 - **Real-time**: sidebar e área principal escutam canais privados Reverb (ver §7).
 
-#### 5.2.3. Resource — "Beta Signups"
-
-Resource Filament read-only (sem `CreateAction`, sem `EditAction`):
-- Listagem dos e-mails inscritos via LP.
-- Colunas: `email`, `created_at`, `ip` (opcional).
-- Filtros: busca por e-mail, intervalo de data.
-- Ação em linha: copiar e-mail. Bulk action: exportar CSV.
-
-> **Nota:** este resource é visível no Admin Panel conforme briefing. (No Superadmin Panel também há visão dos mesmos e-mails — ver §5.3.)
+> **Nota sobre Beta Signups:** os e-mails de inscritos **não aparecem no Admin Panel** — visíveis apenas no Superadmin Panel (operação SaaS). Veja §5.3.
 
 ### 5.3. Superadmin Panel (`/superadmin`)
 
-Painel Filament autenticado, separado, com `authGuard` próprio (`superadmin`).
+Painel Filament autenticado, separado. Acesso liberado apenas para `users.is_superadmin = true`.
 
-- **Resource "Beta Signups"** — mesma visualização do Admin, com filtros e exportação.
+#### 5.3.1. Dashboard
+
+Page padrão (`/superadmin`) com `SuperadminStats`:
+- **Usuários** — total + ativos / superadmins.
+- **Inscritos no Beta** — total + chart dos últimos 7 dias.
+- **Listas públicas no ar** — gauge geral do uso.
+
+#### 5.3.2. Resources
+
+- **Resource "Beta Signups"** — listagem read-only dos e-mails de inscritos (única exposição no MVP).
 - **Resource "Users"**
   - Lista usuários do Admin Panel.
   - Action `CreateAction` (header):
@@ -325,9 +333,11 @@ flowchart LR
 ### 8.3. Componentes Filament obrigatórios
 
 - Todo form schema usa **`Section`** e/ou **`Fieldset`** quando há agrupamento lógico (configuração de lista, edição de item, criação de usuário no Superadmin).
-- Listagens usam `Tables\Table` nativo (Beta Signups, Users).
+- Listagens usam `Tables\Table` nativo (Beta Signups no Superadmin, Users no Superadmin).
 - Slideover via `->slideOver()` nas actions de item e de configuração de lista.
 - Badges, ícones e cores derivam dos Enums (`HasLabel`/`HasColor`/`HasIcon`).
+- **Actions secundárias / por linha são icon-only** (`->iconButton()->tooltip(...)`) — Filament 5 enum `Size::Small` para compactação. Ações primárias (Nova lista, Novo item) mantêm label.
+- **Custom Themes** publicados via `php artisan make:filament-theme {admin|superadmin}` e carregados nos PanelProviders com `->viteTheme(...)`. CSS dedicado em `resources/css/filament/{admin,superadmin}/theme.css` define utilidades reutilizáveis: `.playtask-list-item`, `.playtask-todo-row`, `.playtask-pill--{neutral,tag,success,warning}`, `.playtask-check`.
 
 ---
 
